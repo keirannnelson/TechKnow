@@ -37,3 +37,18 @@ class TestQueries(unittest.TestCase):
         answers2 = 'a, b, c, d'
         
         self.assertEqual(query_problem('title', 'test_table', 'testing.db'), (question_title, question_text, answers1, answers2))
+        
+
+    def test_query_problem_no_record(self):
+        with self.assertRaises(AssertionError):
+            query_problem('fake_record', 'test_table', 'testing.db')
+
+
+    def test_query_problem_no_table(self):
+        with self.assertRaises(AssertionError):
+            query_problem('title', 'fake', 'testing.db')
+
+    
+    def test_query_problem_no_db(self):
+        with self.assertRaises(AssertionError):
+            query_problem('title', 'test_table', 'fake.db')

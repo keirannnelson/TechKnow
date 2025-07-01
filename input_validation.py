@@ -1,13 +1,16 @@
 import os 
 from google import genai
 from google.genai import types
+from dotenv import load_dotenv
 
-my_api_key = "AIzaSyBkaYLY8OjKdaFN4blXJ_L2R19Lp1yThNs"
+load_dotenv()
 
-genai.api_key = my_api_key
+api_key = os.getenv("GOOGLE_API_KEY")
+
+genai.api_key = os.getenv("GOOGLE_API_KEY")
 
 client = genai.Client(
-    api_key=my_api_key,
+    api_key=genai.api_key,
 )
 
 """

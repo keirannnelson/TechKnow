@@ -16,5 +16,5 @@ jobs:
         run: python -m pip install --upgrade pip pytest
 
       - name: Test with unittest
-        working-directory: ./tests
-        run: python -m unittest test_query.py
+        working-directory: ./
+        run: python -m unittest tests/test_query.py

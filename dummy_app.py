@@ -1,4 +1,4 @@
-from input_validation import validate_abcd, validate_number, validate_alphabetical, validate_option
+from input_validation import validate_abcd, validate_number, validate_alphabetical, validate_option, refactor_option
 from input_evaluation import check_answer
 from ai_feedback import give_feedback
 
@@ -43,11 +43,19 @@ from ai_feedback import give_feedback
 # print(f"{input} is {check_answer(input, answers)}")
 
 """ Test give_feedback"""
-question = "Given the leetcode problem two-sum, what is the most efficient approach to solving the problem?"
-incorrect_answer = "Sorting"
-correct_answer = "Hash Map"
+# question = "Given the leetcode problem two-sum, what is the most efficient approach to solving the problem?"
+# incorrect_answer = "Sorting"
+# correct_answer = "Hash Map"
 
-feedback = give_feedback(question, incorrect_answer, correct_answer)
-print(feedback)
+# feedback = give_feedback(question, incorrect_answer, correct_answer)
+# print(feedback)
+
+
+""" Test refactor_option"""
+answers = ["Two Pointer", "Dynamic Programming", "Breadth First Search", "Depth First Search"]
+user_answer = "2 Pointer"
+
+new_answer = refactor_option(user_answer, answers)
+print(new_answer)
 
 

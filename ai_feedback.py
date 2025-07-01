@@ -6,17 +6,13 @@ my_api_key = "AIzaSyBkaYLY8OjKdaFN4blXJ_L2R19Lp1yThNs"
 
 genai.api_key = my_api_key
 
-
-# WRITE YOUR CODE HERE
-
-# Create an genAI client using the key from our environment variable
 client = genai.Client(
     api_key=my_api_key,
 )
 
 def give_feedback(question, incorrect_answer, correct_answer):
     print("Generating response...")
-    # Specify the model to use and the messages to send
+
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         config=types.GenerateContentConfig(

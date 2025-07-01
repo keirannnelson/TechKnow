@@ -23,9 +23,8 @@ class TestQueries(unittest.TestCase):
         question_text = 'text'
         answers1 = 'a, b, c, d'
         answers2 = 'a, b, c, d'
-
-        cur.execute(f'''INSERT INTO test_table(question_title, question_text, answers1, answers2) 
-                    values ({question_title}, {question_text}, {answers1}, {answers2});''')
+        #f'INSERT INTO test_table  (question_title, question_text, answers1, answers2)  VALUES ({question_title}, {question_text}, {answers1}, {answers2}
+        cur.execute(f'INSERT INTO test_table  (question_title, question_text, answers1, answers2)  VALUES ("{question_title}", "{question_text}", "{answers1}", "{answers2}");')
         
         con.commit()
         con.close()
@@ -37,4 +36,4 @@ class TestQueries(unittest.TestCase):
         answers1 = 'a, b, c, d'
         answers2 = 'a, b, c, d'
         
-        self.assertEqual(query_problem('title', 'testing_table', 'testing.db'), (question_title, question_text, answers1, answers2))
+        self.assertEqual(query_problem('title', 'test_table', 'testing.db'), (question_title, question_text, answers1, answers2))

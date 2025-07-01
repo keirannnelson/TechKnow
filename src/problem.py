@@ -13,6 +13,13 @@ class Problem():
         
         self.title = title
         self.text = text
+
+        if not isinstance(answers1, list):
+            answers1 = answers1.replace(',','').split(' ')
+
+        if not isinstance(answers2, list):
+            answers2 = answers2.replace(',','').split(' ')
+
         self.answers1 = answers1
         self.answers2 = answers2
 

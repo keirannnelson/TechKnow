@@ -1,12 +1,14 @@
 import unittest
 import sqlite3
 
-from src.problem import query_problem
+from src.queries import query_problem
 
 class TestQueries(unittest.TestCase):
 
     
     def setUp(self):
+
+        # Create a testing database
         con = sqlite3.connect('testing.db')
         cur = con.cursor()
         cur.execute('''

@@ -67,3 +67,22 @@ def print_problem_menu(problems, header=True, footer=True):
     print()
     if footer:
         print('='*30)
+
+def print_feedback(user_answer1, user_answer2, correct_answer1, correct_answer2, header=True, footer=True):
+    if header:
+        print('='*30)
+    print()
+    print('Question 1:')
+    print()
+    if user_answer1 == correct_answer1:
+        print(f'Correct! The proper approach for the problem is {correct_answer1}')
+    else:
+        print(f'Incorrect, the proper approach for the problem was {correct_answer1}, not {user_answer1}')
+    print()
+    if user_answer2 == correct_answer2:
+        print(f'Correct! The data structures utilized in this problem are {correct_answer2}')
+    else:
+        print(f'Incorrect, the data structures utilized in this problem are {correct_answer2}, not {user_answer2}')
+    print()
+    if footer:
+        print('='*30)

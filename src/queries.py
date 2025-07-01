@@ -20,7 +20,7 @@ def query_problem(problem_name, table_name, db_path):
 
     cur.execute(f'SELECT name FROM sqlite_master WHERE type="table" AND name="{table_name}";')
     res = cur.fetchall()
-    assert res != None, f'Error: table "{table_name}" does not exist'
+    assert len(res) > 0, f'Error: table "{table_name}" does not exist'
 
     # NOTE Name of specific fields will probably change once real DB is generated
     # Query DB and fetch a single record

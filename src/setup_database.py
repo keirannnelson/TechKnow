@@ -42,12 +42,12 @@ def create_database():
 
     with open(csv_path, newline='', encoding='utf-8') as f:
         reader = csv.reader(f)
-        first_line = next(reader)
-
-        for row in reader:
-            cursor.execute("""
-                INSERT INTO questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, row)
+        first_line = next(reader) 
+        if row[3]:
+            for row in reader:
+                cursor.execute("""
+                    INSERT INTO questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, row)
 
     conn.commit()
     print("Database created.")

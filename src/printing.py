@@ -1,3 +1,4 @@
+from input_evaluation import check_answer
 
 
 def print_general(text, header=True, footer=True):
@@ -33,6 +34,8 @@ def print_approach_question(answers, header=True, footer=True):
     for letter, answer in zip(letters, answers):
         print(f'\t{letter}. {answer}')
 
+    print('Input the correct letter')
+
     print()
     if footer:
         print('='*30)
@@ -49,6 +52,7 @@ def print_data_structures_question(answers, header=True, footer=True):
 
     for letter, answer in zip(letters, answers):
         print(f'\t{letter}. {answer}')
+    print('Input the correct letter')
 
     print()
     if footer:
@@ -69,20 +73,36 @@ def print_problem_menu(problems, header=True, footer=True):
         print('='*30)
 
 def print_feedback(user_answer1, user_answer2, correct_answer1, correct_answer2, header=True, footer=True):
+
+
     if header:
         print('='*30)
     print()
     print('Question 1:')
     print()
-    if user_answer1 == correct_answer1:
-        print(f'Correct! The proper approach for the problem is {correct_answer1}')
+    if check_answer(user_answer1, correct_answer1):
+        if len(correct_answer2) == 1:
+            print(f'Correct! This problem is a {correct_answer1[0]} problem')
+        else:
+            print(f'Correct! The problem is a {correct_answer1} problem')
     else:
-        print(f'Incorrect, the proper approach for the problem was {correct_answer1}, not {user_answer1}')
+        if len(correct_answer2) == 1:
+            print(f'incorrect! This problem is a {correct_answer1[0]} problem')
+        else:
+            print(f'incorrect! The problem is ')
+        
     print()
-    if user_answer2 == correct_answer2:
-        print(f'Correct! The data structures utilized in this problem are {correct_answer2}')
+    if check_answer(user_answer2, correct_answer2):
+        if len(correct_answer2) == 1:
+            print(f'Correct! The data structure utilized in this problem is a {correct_answer2[0]}')
+        else:
+            print('Correct! The data structures utilized in this problem are', *correct_answer2)
     else:
-        print(f'Incorrect, the data structures utilized in this problem are {correct_answer2}, not {user_answer2}')
+        if len(correct_answer2) == 1:
+            print(f'Incorrect! the only data structure utilized in this problem is a {correct_answer2[0]}')
+        else:
+            print('Incorrect! The data structures utilized in this problem are ', *correct_answer2, sep=",")
+            
     print()
     if footer:
         print('='*30)

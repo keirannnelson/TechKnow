@@ -24,10 +24,12 @@ def query_problem(problem_name, table_name, db_path):
 
     # NOTE Name of specific fields will probably change once real DB is generated
     # Query DB and fetch a single record
-    cur.execute(f'SELECT question_title, question_text, answers1, answers2 FROM {table_name} WHERE question_title = "{problem_name}";')
+    cur.execute(f'SELECT question_title, question_text, answers1, answers2, correct_answer1, correct_answer2 FROM {table_name} WHERE question_title = "{problem_name}";')
     res = cur.fetchone()
 
     assert res != None, f'Error: record "{problem_name}" does not exist in table "{table_name}"'
     con.close()
 
     return res
+
+

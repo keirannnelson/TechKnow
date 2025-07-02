@@ -39,12 +39,6 @@ def get_number(lower_bound, upper_bound):
         user_input = input('>>> ')
 
     return int(user_input)
-    
-def validate_alphabetical(input):
-    return input.strip().isalpha()
-
-def validate_option(input, valid_options):
-    return input.strip().lower() in {opt.lower() for opt in valid_options}
 
 """
 def refactor_option(input, valid_options):

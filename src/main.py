@@ -67,8 +67,9 @@ exit and it will close the program. Have fun practicing!""", footer=False)
         # Give feedback
         pf.print_feedback(answer1, answer2, problem.correct_answer1, problem.correct_answer2)
 
-       # pf.print_general('Would you like to have the answer explained? If so choose "style", "datastructure" or "both"')
-
+        pf.print_general('Would you like to have the answer explained? If so choose "style", "datastructure" or "both"')
+        user_feedback_choice = input()
+        
 
 
 

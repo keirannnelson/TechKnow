@@ -7,31 +7,28 @@ from ai_feedback import give_feedback
 from input_validation import get_program, get_abcd_multi
 from input_evaluation import check_answer
 
-DATA_STRUCTURES = {'Trie', 
-                    'Binary Indexed Tree', 
-                    'String', 
-                    'Hash Table', 
-                    'Graph', 
-                    'Stack',
-                    'Heap (Priority Queue)', 
-                    'Array', 
-                    'Binary Tree', 
-                    'Ordered Set', 
-                    'Tree', 
-                    'Queue', 
-                    'Binary Search Tree',
-                    'Linked List',
-                    'Monotonic Queue',
-                    'Doubly-Linked List'
-                    }
-ABCD_TO_INDEX = {'a':0, 'b':1, 'c':2, 'd':3}
+DATA_STRUCTURES = {'Trie', 'Binary Indexed Tree', 'String', 'Hash Table', 'Graph', 'Stack',
+                   'Heap (Priority Queue)', 'Array', 'Binary Tree', 'Ordered Set', 'Tree', 'Queue',
+                   'Binary Search Tree', 'Linked List', 'Monotonic Queue', 'Doubly-Linked List'}
+ABCD_TO_INDEX = {'a': 0, 'b': 1, 'c': 2, 'd': 3}
+
+# Difficulty modes
+def prompt_difficulty():
+    options = {'1': 'easy', '2': 'medium', '3': 'hard', '4': 'random'}
+    while True:
+        print("Select difficulty: 1) Easy  2) Medium  3) Hard  4) Random")
+        choice = input('> ').strip()
+        if choice in options:
+            return options[choice]
+        print('Invalid selection. Choose 1, 2, 3, or 4.')
+
 
 def get_answer_choice(correct_answers, answers_set):
-    answers = [i for i in correct_answers]
-    answers += random.sample(sorted(set(answers_set)-set(correct_answers)), 4 - len(correct_answers))
+    answers = list(correct_answers)
+    answers += random.sample(sorted(set(answers_set) - set(correct_answers)), 4 - len(correct_answers))
     random.shuffle(answers)
     return answers
-        
+
 
 def load_buckets():
     src_dir = os.path.dirname(__file__)
@@ -42,28 +39,24 @@ def load_buckets():
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
     cur.execute(
-        "SELECT question_id, title, question_text, tags, hints FROM questions;"
+        "SELECT question_id, title, question_text, tags, hints, difficulty FROM questions;"
     )
     rows = cur.fetchall()
     conn.close()
 
     buckets = {}
-    for qid, title, text, raw_tags, raw_hints in rows:
-        tags = [t.strip() for t in raw_tags.strip('[]')
-                .replace("'", "")
-                .split(',') if t.strip()]
-        hints_list = [h.strip() for h in raw_hints.split(';')
-                      if raw_hints and h.strip()]
+    for qid, title, text, raw_tags, raw_hints, difficulty in rows:
+        tags = [t.strip() for t in raw_tags.strip('[]').replace("'", "").split(',') if t.strip()]
+        hints_list = [h.strip() for h in raw_hints.split(';') if raw_hints and h.strip()]
         data_structures = {i for i in tags if i in DATA_STRUCTURES}
         entry = {
             'id': qid,
             'title': title,
             'text': text.strip(),
             'hints': hints_list,
-            'data_structures' : data_structures,
-            'type' : set(tags) - data_structures
+            'data_structures': data_structures,
+            'difficulty': difficulty.lower()
         }
-
         for tag in tags:
             buckets.setdefault(tag, []).append(entry)
     return buckets
@@ -85,42 +78,45 @@ def prompt_choice(num_topics):
     return -1
 
 
-def show_question_flow(topic, question):
-    pf.print_general(f"Random {topic} question:", header=False)
+def show_question_flow(topic, question_list):
+    pf.print_general(f"Topic: {topic}", header=False)
+    diff = prompt_difficulty()
+    if diff != 'random':
+        filtered = [q for q in question_list if q.get('difficulty') == diff]
+        if not filtered:
+            print(f"No {diff.capitalize()} questions; defaulting to all difficulties.")
+            filtered = question_list
+    else:
+        filtered = question_list
+    question = random.choice(filtered)
+
+    pf.print_general(f"{diff.capitalize()} question:", header=False)
     pf.print_problem(question['title'], question['text'])
 
-    # do approach and ds problems
-    #type = question['type']
-    data_structures = question['data_structures']
-    #answers1 = get_answer_choice(type, DATA_STRUCTURES)
-    answers2 = get_answer_choice(data_structures, DATA_STRUCTURES)
-
+    # Data structure MCQ
+    answers2 = get_answer_choice(question['data_structures'], DATA_STRUCTURES)
     pf.print_data_structures_question(answers2)
-    user_answers2 = get_abcd_multi()
-    user_answers2 = {answers2[ABCD_TO_INDEX[i]] for i in user_answers2}
+    user_sel = get_abcd_multi()
+    user_answers2 = [answers2[ABCD_TO_INDEX[c]] for c in user_sel]
+    pf.print_feedback([], user_answers2, [], answers2)
 
-    pf.print_feedback('testing', 'testing', answers2, user_answers2)
-    
-
+    # Hints
     if question['hints']:
         print("Type 'hint' for a hint, or press Enter to continue.")
         if input('> ').strip().lower() == 'hint':
             for hint in question['hints']:
                 pf.print_general(f"Hint: {hint}", header=False)
 
+    # Code attempts
     while True:
-        print(
-            "Enter your solution attempt. When finished type a ';', to quit enter 'exit', for a new problem enter 'next'"
-        )
+        print("Enter your solution attempt (end with ';'), or type 'next' for new question, 'exit' to quit.")
         user_input = get_program()
         if user_input.lower() == 'next':
             return
         if user_input.lower() == 'exit':
             pf.print_general('Thank you for practicing with TechKnow!')
             sys.exit(0)
-        guidance = give_feedback(
-            question['title'], question['text'], user_input
-        )
+        guidance = give_feedback(question['title'], question['text'], user_input)
         pf.print_general(guidance, header=False)
 
 
@@ -144,9 +140,7 @@ Simply type a topic number to get a random problem, or 'exit' to quit.
             print('Sorry, please try again.')
             continue
 
-        topic = topics[idx]
-        question = random.choice(buckets[topic])
-        show_question_flow(topic, question)
+        show_question_flow(topics[idx], buckets[topics[idx]])
 
     pf.print_general('Thank you for practicing with TechKnow!')
 

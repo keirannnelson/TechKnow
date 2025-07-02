@@ -51,3 +51,4 @@ def validate_alphabetical(input):
 
 def validate_option(input, valid_options):
     return input.strip().lower() in {opt.lower() for opt in valid_options}
+

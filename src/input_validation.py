@@ -19,14 +19,18 @@ def get_abcd_multi():
     """Returns a valid a, b, c, d selection from user input"""
     valid_answers = {"a", "b", "c", "d"}
     user_input = input('>>> ')
+    if user_input.lower() in ['exit', 'next']:
+        return user_input.lower()
     
     user_set = set()
     for i in user_input.split(' '):
         user_set.add(i.strip().lower())
 
-    while len(user_set.difference(valid_answers)) != 0 and user_input.lower() not in ['back', 'exit']:
+    while len(user_set.difference(valid_answers)) != 0:
         print('Please only enter characters A, B, C, or D, separated by a space')
         user_input = input('>>> ')
+        if user_input.lower() in ['exit', 'next']:
+            return user_input.lower()
         user_set = set()
         for i in user_input.split():
             user_set.add(i.lower())
@@ -48,7 +52,7 @@ def get_number(lower_bound, upper_bound):
     
 def get_program(delimiter=';'):
     lines = []
-    line = input('>>>')
+    line = input('>>> ')
     while line != ';' and line.lower() not in ['exit', 'next']:
         lines.append(line)
         line = input('>>>')
@@ -59,3 +63,10 @@ def get_program(delimiter=';'):
         return  'next'
 
     return '\n'.join(lines)
+
+def check_program(program):
+    try:
+        exec((program), {})  # Dangerous: only for trusted input!
+        return True
+    except Exception:
+        return False

@@ -83,7 +83,19 @@ TYPES = {
             'Radix Sort'
         }
 
+
+
 ABCD_TO_INDEX = {'a':0, 'b':1, 'c':2, 'd':3}
+
+# Difficulty modes
+def prompt_difficulty():
+    options = {'1': 'easy', '2': 'medium', '3': 'hard', '4': 'random'}
+    while True:
+        print("Select difficulty: 1) Easy  2) Medium  3) Hard  4) Random")
+        choice = input('> ').strip()
+        if choice in options:
+            return options[choice]
+        print('Invalid selection. Choose 1, 2, 3, or 4.')
 
 def get_answer_choice(correct_answers, answers_set):
     answers = list(correct_answers)
@@ -117,6 +129,7 @@ def load_buckets():
             'text': text.strip(),
             'hints': hints_list,
             'data_structures': data_structures,
+            'type' : set(tags) - data_structures,
             'difficulty': difficulty.lower()
         }
         for tag in tags:
@@ -152,8 +165,8 @@ def show_question_flow(topic, question_list):
         filtered = question_list
     question = random.choice(filtered)
 
-    pf.print_general(f"{diff.capitalize()} question:", header=False)
-    pf.print_problem(question['title'], question['text'])
+    pf.print_general(f"{diff.capitalize()} question:", header=False, footer=False)
+    pf.print_problem(question['title'], question['text'], header=False)
 
     # do approach and ds problems
     types = question['type']
@@ -162,7 +175,7 @@ def show_question_flow(topic, question_list):
     answers2 = get_answer_choice(data_structures, DATA_STRUCTURES)
 
     #prompt for approach question
-    pf.print_approach_question(answers1)
+    pf.print_approach_question(answers1, header=False)
     user_answers1 = get_abcd_multi()
     user_answers1 = {answers1[ABCD_TO_INDEX[i]] for i in user_answers1}
 

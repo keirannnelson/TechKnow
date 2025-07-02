@@ -1,81 +1,110 @@
+import os
+import random
+import sqlite3
+import sys
 import printing as pf
-import queries
-from problem import Problem
-from input_validation import get_abcd_single, get_abcd_multi, get_number
 from ai_feedback import give_feedback
 
-DATABASE_PATH = 'testing.db'
-TABLE_NAME = 'test_table'
-letter_to_idx = {'a':0, 'b':1, 'c':2, 'd':3}
+
+def load_buckets():
+    src_dir = os.path.dirname(__file__)
+    root_dir = os.path.abspath(os.path.join(src_dir, '..'))
+    db_path = os.path.join(root_dir, 'leetcode.db')
+    if not os.path.exists(db_path):
+        raise FileNotFoundError(f"Database not found at {db_path}")
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT question_id, title, question_text, tags, hints FROM questions;"
+    )
+    rows = cur.fetchall()
+    conn.close()
+
+    buckets = {}
+    for qid, title, text, raw_tags, raw_hints in rows:
+        tags = [t.strip() for t in raw_tags.strip('[]')
+                .replace("'", "")
+                .split(',') if t.strip()]
+        hints_list = [h.strip() for h in raw_hints.split(';')
+                      if raw_hints and h.strip()]
+        entry = {
+            'id': qid,
+            'title': title,
+            'text': text.strip(),
+            'hints': hints_list
+        }
+        for tag in tags:
+            buckets.setdefault(tag, []).append(entry)
+    return buckets
+
+
+def display_menu(topics, buckets):
+    pf.print_general('Select a topic by number:', footer=False)
+    for i, topic in enumerate(topics, start=1):
+        print(f"  {i:2d}. {topic} ({len(buckets[topic])} problems)")
+    print()
+
+
+def prompt_choice(num_topics):
+    choice = input('Enter topic number (or "exit"): ').strip().lower()
+    if choice == 'exit':
+        return None
+    if choice.isdigit() and 1 <= int(choice) <= num_topics:
+        return int(choice) - 1
+    return -1
+
+
+def show_question_flow(topic, question):
+    pf.print_general(f"Random {topic} question:", header=False)
+    pf.print_problem(question['title'], question['text'])
+
+    if question['hints']:
+        print("Type 'hint' for a hint, or press Enter to continue.")
+        if input('> ').strip().lower() == 'hint':
+            for hint in question['hints']:
+                pf.print_general(f"Hint: {hint}", header=False)
+
+    while True:
+        print(
+            "Enter your solution attempt (single line), or type 'next' for a new question, 'exit' to quit."
+        )
+        user_input = input('> ').strip()
+        if user_input.lower() == 'next':
+            return
+        if user_input.lower() == 'exit':
+            pf.print_general('Thank you for practicing with TechKnow!')
+            sys.exit(0)
+        guidance = give_feedback(
+            question['title'], question['text'], user_input
+        )
+        pf.print_general(guidance, header=False)
 
 
 def main():
-    # Greeting
-    pf.print_general("""Welcome to TechKnow!
-TechKnow is an interview prepper that helps you identify different styles of Leetcode problem based on the approach.
-It also helps you learn the best data structures to use for each problem through quizzes with dynamic feedback.
-                     
-When prompted you will enter either integers or letters to select problems or answers. If you want to return to 
-the start menu simply type 'back' and it will return you to the problem screen. If you want to exit the program type
-exit and it will close the program. Have fun practicing!""", footer=False)
-    
+    pf.print_general(
+        """
+Welcome to TechKnow!
+TechKnow is an interview prepper that lets you choose from 71 LeetCode topics and practice random questions on the fly.
+Simply type a topic number to get a random problem, or 'exit' to quit.
+""", footer=False)
+
+    buckets = load_buckets()
+    topics = sorted(buckets.keys())
 
     while True:
-        # Show problem menu
-        problems = ['Longest Palindromic Substring', 'Container with most water', '3sum'] # query problems
-        pf.print_problem_menu(problems, header=False)
-        
-        # Select problem (w/ input validation)
-        user_input = get_number(1, len(problems))
-        if user_input == 'back':
-            continue
-        elif user_input == 'exit':
+        display_menu(topics, buckets)
+        idx = prompt_choice(len(topics))
+        if idx is None:
             break
-
-        problem_idx = int(user_input) - 1
-        problem_name = problems[problem_idx]
-        problem_title, problem_text, problem_answers1, problem_answers2, correct_answer1, correct_answer2  = queries.query_problem(problem_name, TABLE_NAME, DATABASE_PATH)
-        
-
-        problem = Problem(problem_title, problem_text, problem_answers1, problem_answers2, correct_answer1, correct_answer2)
-
-        # Run quiz
-        # Question 1
-        pf.print_problem(problem.title, problem.text, footer=False)
-        pf.print_approach_question(problem.answers1, header=False)
-
-        user_input = get_abcd_single()
-        if user_input == 'back':
+        if idx == -1:
+            print('Sorry, please try again.')
             continue
-        elif user_input == 'exit':
-            break
 
-        answer1 = problem.answers1[letter_to_idx[user_input]]
-        
+        topic = topics[idx]
+        question = random.choice(buckets[topic])
+        show_question_flow(topic, question)
 
-        # Question 2
-        pf.print_data_structures_question(problem.answers2)
-        
-        user_input = get_abcd_single()
-        if user_input == 'back':
-            continue
-        elif user_input == 'exit':
-            break
-        answer2 = problem.answers2[letter_to_idx[user_input]]
-        
-
-        # Give feedback
-        pf.print_feedback(answer1, answer2, problem.correct_answer1, problem.correct_answer2)
-
-        pf.print_general('Would you like to have the answer explained? If so choose "style", "datastructure" or "both"')
-        user_feedback_choice = input()
-        
-
-
-
-    # exit message
-    pf.print_general("Thank you for practicing with TechKnow!")
-
+    pf.print_general('Thank you for practicing with TechKnow!')
 
 
 if __name__ == '__main__':

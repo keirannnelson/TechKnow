@@ -4,7 +4,7 @@ import sqlite3
 import sys
 import printing as pf
 from ai_feedback import give_feedback
-from input_validation import get_program, get_abcd_multi
+from input_validation import get_program, get_abcd_multi, check_program
 from input_evaluation import check_answer
 
 DATA_STRUCTURES = {'Trie', 
@@ -92,7 +92,7 @@ def prompt_difficulty():
     options = {'1': 'easy', '2': 'medium', '3': 'hard', '4': 'random'}
     while True:
         print("Select difficulty: 1) Easy  2) Medium  3) Hard  4) Random")
-        choice = input('> ').strip()
+        choice = input('>>> ').strip()
         if choice in options:
             return options[choice]
         print('Invalid selection. Choose 1, 2, 3, or 4.')
@@ -177,19 +177,32 @@ def show_question_flow(topic, question_list):
     #prompt for approach question
     pf.print_approach_question(answers1, header=False)
     user_answers1 = get_abcd_multi()
+
+    if user_answers1 == 'exit':
+        pf.print_general('Thank you for practicing with TechKnow!')
+        sys.exit(0)
+    if user_answers1 =='next':
+        return
+    
     user_answers1 = {answers1[ABCD_TO_INDEX[i]] for i in user_answers1}
 
     # prompt for ds question
     pf.print_data_structures_question(answers2)
     user_answers2 = get_abcd_multi()
+    if user_answers2 == 'exit':
+        pf.print_general('Thank you for practicing with TechKnow!')
+        sys.exit(0)
+    if user_answers2 =='next':
+        return
+    
     user_answers2 = {answers2[ABCD_TO_INDEX[i]] for i in user_answers2}
-
+    
     pf.print_feedback(user_answers1,  user_answers2, types, data_structures)
     
-
+    # prompt user for hints
     if question['hints']:
         print("Type 'hint' for a hint, or press Enter to continue.")
-        if input('> ').strip().lower() == 'hint':
+        if input('>>> ').strip().lower() == 'hint':
             for hint in question['hints']:
                 pf.print_general(f"Hint: {hint}", header=False)
 
@@ -202,6 +215,16 @@ def show_question_flow(topic, question_list):
         if user_input.lower() == 'exit':
             pf.print_general('Thank you for practicing with TechKnow!')
             sys.exit(0)
+
+        while not check_program(user_input):
+            print("There's an error in your code. Please try again")
+            user_input = get_program()
+            if user_input.lower() == 'next':
+                return
+            if user_input.lower() == 'exit':
+                pf.print_general('Thank you for practicing with TechKnow!')
+                sys.exit(0)
+
         guidance = give_feedback(question['title'], question['text'], user_input)
         pf.print_general(guidance, header=False)
 

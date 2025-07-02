@@ -4,7 +4,25 @@ import sqlite3
 import sys
 import printing as pf
 from ai_feedback import give_feedback
+from input_validation import get_program
 
+DATA_STRUCTURES = {'Trie', 
+                    'Binary Indexed Tree', 
+                    'String', 
+                    'Hash Table', 
+                    'Graph', 
+                    'Stack',
+                    'Heap (Priority Queue)', 
+                    'Array', 
+                    'Binary Tree', 
+                    'Ordered Set', 
+                    'Tree', 
+                    'Queue', 
+                    'Binary Search Tree',
+                    'Linked List',
+                    'Monotonic Queue',
+                    'Doubly-Linked List'
+                    }
 
 def load_buckets():
     src_dir = os.path.dirname(__file__)
@@ -27,12 +45,16 @@ def load_buckets():
                 .split(',') if t.strip()]
         hints_list = [h.strip() for h in raw_hints.split(';')
                       if raw_hints and h.strip()]
+        data_structures = {i for i in raw_tags if i in DATA_STRUCTURES}
         entry = {
             'id': qid,
             'title': title,
             'text': text.strip(),
-            'hints': hints_list
+            'hints': hints_list,
+            'data_structures' : data_structures,
+            'type' : ''
         }
+
         for tag in tags:
             buckets.setdefault(tag, []).append(entry)
     return buckets
@@ -66,9 +88,9 @@ def show_question_flow(topic, question):
 
     while True:
         print(
-            "Enter your solution attempt (single line), or type 'next' for a new question, 'exit' to quit."
+            "Enter your solution attempt. When finished type a ';', to quit enter 'exit', for a new problem enter 'next'"
         )
-        user_input = input('> ').strip()
+        user_input = get_program()
         if user_input.lower() == 'next':
             return
         if user_input.lower() == 'exit':

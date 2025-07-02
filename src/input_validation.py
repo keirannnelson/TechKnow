@@ -46,9 +46,16 @@ def get_number(lower_bound, upper_bound):
 
     return user_input
     
-def validate_alphabetical(input):
-    return input.strip().isalpha()
+def get_program(delimiter=';'):
+    lines = []
+    line = input('>>>')
+    while line != ';' and line.lower() not in ['exit', 'next']:
+        lines.append(line)
+        line = input('>>>')
+        
+    if line.lower() == 'exit':
+        return 'exit'
+    if line.lower() == 'next':
+        return  'next'
 
-def validate_option(input, valid_options):
-    return input.strip().lower() in {opt.lower() for opt in valid_options}
-
+    return '\n'.join(lines)

@@ -24,6 +24,65 @@ DATA_STRUCTURES = {'Trie',
                     'Monotonic Queue',
                     'Doubly-Linked List'
                     }
+
+TYPES = {
+            'Number Theory', 
+            'Recursion', 
+            'Design', 
+            'Brainteaser', 
+            'Reservoir Sampling', 
+            'Greedy', 
+            'Enumeration', 
+            'Math', 
+            'Quickselect', 
+            'String Matching', 
+            'Divide and Conquer', 
+            'Memoization', 
+            'Hash Function', 
+            'Interactive', 
+            'Randomized', 
+            'Binary Search', 
+            'Bit Manipulation',
+            'Bitmask', 
+            'Biconnected Component', 
+            'Rolling Hash', 
+            'Data Stream', 
+            'Eulerian Circuit', 
+            'Strongly Connected Component', 
+            'Line Sweep', 
+            'Monotonic Stack', 
+            'Prefix Sum', 
+            'Simulation', 
+            'Merge Sort', 
+            'Matrix',
+            'Game Theory', 
+            'Rejection Sampling', 
+            'Minimum Spanning Tree', 
+            'Depth-First Search', 
+            'Dynamic Programming', 
+            'Sorting', 
+            'Segment Tree', 
+            'Database',
+            'Iterator', 
+            'Counting', 
+            'Two Pointers',
+            'Sliding Window', 
+            'Suffix Array', 
+            'Backtracking', 
+            'Shortest Path', 
+            'Bucket Sort', 
+            'Geometry', 
+            'Combinatorics', 
+            'Concurrency', 
+            'Breadth-First Search', 
+            'Counting Sort',
+            'Shell', 
+            'Union Find', 
+            'Probability and Statistics', 
+            'Topological Sort', 
+            'Radix Sort'
+        }
+
 ABCD_TO_INDEX = {'a':0, 'b':1, 'c':2, 'd':3}
 
 def get_answer_choice(correct_answers, answers_set):
@@ -90,16 +149,22 @@ def show_question_flow(topic, question):
     pf.print_problem(question['title'], question['text'])
 
     # do approach and ds problems
-    #type = question['type']
+    types = question['type']
     data_structures = question['data_structures']
-    #answers1 = get_answer_choice(type, DATA_STRUCTURES)
+    answers1 = get_answer_choice(types, TYPES)
     answers2 = get_answer_choice(data_structures, DATA_STRUCTURES)
 
+    #prompt for approach question
+    pf.print_approach_question(answers1)
+    user_answers1 = get_abcd_multi()
+    user_answers1 = {answers1[ABCD_TO_INDEX[i]] for i in user_answers1}
+
+    # prompt for ds question
     pf.print_data_structures_question(answers2)
     user_answers2 = get_abcd_multi()
     user_answers2 = {answers2[ABCD_TO_INDEX[i]] for i in user_answers2}
 
-    pf.print_feedback('testing', 'testing', answers2, user_answers2)
+    pf.print_feedback(user_answers1,  user_answers2, types, data_structures)
     
 
     if question['hints']:

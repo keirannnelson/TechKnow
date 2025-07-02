@@ -77,31 +77,55 @@ def print_feedback(user_answer1, user_answer2, correct_answer1, correct_answer2,
 
     if header:
         print('='*30)
-    print()
-    print('Question 1:')
+
     print()
     if check_answer(user_answer1, correct_answer1):
-        if len(correct_answer2) == 1:
-            print(f'Correct! This problem is a {correct_answer1[0]} problem')
+        correct_answer1 = list(correct_answer1)
+        if len(correct_answer1) == 1:
+            print(f'Correct! This problem is a {correct_answer1[0]} problem ', end='')
         else:
-            print(f'Correct! The problem is a {correct_answer1} problem')
+            print(f'Correct! The problem is a ')
+            
+            for i in correct_answer1[:-1]:
+                print(f'{i}', end=', ')
+
+            print(f'and {correct_answer1[-1]} problem')
     else:
-        if len(correct_answer2) == 1:
-            print(f'incorrect! This problem is a {correct_answer1[0]} problem')
+        correct_answer1 = list(correct_answer1)
+        if len(correct_answer1) == 1:
+            print(f'incorrect! This problem is a {correct_answer1[0]} problem ', end='')
         else:
-            print(f'incorrect! The problem is ')
+            print(f'incorrect! The problem is a')
+            
+            for i in correct_answer1[:-1]:
+                print(f'{i}', end=', ')
+
+            print(f'and {correct_answer1[-1]} problem')
         
     print()
     if check_answer(user_answer2, correct_answer2):
+        correct_answer2 = list(correct_answer2)
         if len(correct_answer2) == 1:
             print(f'Correct! The data structure utilized in this problem is a {correct_answer2[0]}')
         else:
-            print('Correct! The data structures utilized in this problem are', *correct_answer2)
+            print('Correct! The data structures utilized in this problem are ', end='')
+            
+            for i in correct_answer2[:-1]:
+                print(f'{i}', end=', ')
+
+            print(f'and {correct_answer2[-1]}')
+
+            
     else:
+        correct_answer2 = list(correct_answer2)
         if len(correct_answer2) == 1:
             print(f'Incorrect! the only data structure utilized in this problem is a {correct_answer2[0]}')
         else:
-            print('Incorrect! The data structures utilized in this problem are ', *correct_answer2, sep=",")
+            print('Incorrect! The data structures utilized in this problem are ', end='')
+            for i in correct_answer2[:-1]:
+                print(f'{i}', end=', ')
+
+            print(f'and {correct_answer2[-1]}')
             
     print()
     if footer:

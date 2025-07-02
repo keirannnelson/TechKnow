@@ -4,7 +4,8 @@ import sqlite3
 import sys
 import printing as pf
 from ai_feedback import give_feedback
-from input_validation import get_program
+from input_validation import get_program, get_abcd_multi
+from input_evaluation import check_answer
 
 DATA_STRUCTURES = {'Trie', 
                     'Binary Indexed Tree', 
@@ -23,6 +24,14 @@ DATA_STRUCTURES = {'Trie',
                     'Monotonic Queue',
                     'Doubly-Linked List'
                     }
+ABCD_TO_INDEX = {'a':0, 'b':1, 'c':2, 'd':3}
+
+def get_answer_choice(correct_answers, answers_set):
+    answers = [i for i in correct_answers]
+    answers += random.sample(sorted(set(answers_set)-set(correct_answers)), 4 - len(correct_answers))
+    random.shuffle(answers)
+    return answers
+        
 
 def load_buckets():
     src_dir = os.path.dirname(__file__)
@@ -45,14 +54,14 @@ def load_buckets():
                 .split(',') if t.strip()]
         hints_list = [h.strip() for h in raw_hints.split(';')
                       if raw_hints and h.strip()]
-        data_structures = {i for i in raw_tags if i in DATA_STRUCTURES}
+        data_structures = {i for i in tags if i in DATA_STRUCTURES}
         entry = {
             'id': qid,
             'title': title,
             'text': text.strip(),
             'hints': hints_list,
             'data_structures' : data_structures,
-            'type' : ''
+            'type' : set(tags) - data_structures
         }
 
         for tag in tags:
@@ -79,6 +88,19 @@ def prompt_choice(num_topics):
 def show_question_flow(topic, question):
     pf.print_general(f"Random {topic} question:", header=False)
     pf.print_problem(question['title'], question['text'])
+
+    # do approach and ds problems
+    #type = question['type']
+    data_structures = question['data_structures']
+    #answers1 = get_answer_choice(type, DATA_STRUCTURES)
+    answers2 = get_answer_choice(data_structures, DATA_STRUCTURES)
+
+    pf.print_data_structures_question(answers2)
+    user_answers2 = get_abcd_multi()
+    user_answers2 = {answers2[ABCD_TO_INDEX[i]] for i in user_answers2}
+
+    pf.print_feedback('testing', 'testing', answers2, user_answers2)
+    
 
     if question['hints']:
         print("Type 'hint' for a hint, or press Enter to continue.")

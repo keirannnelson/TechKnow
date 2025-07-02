@@ -22,7 +22,7 @@ def get_abcd_multi():
     
     user_set = set()
     for i in user_input.split(' '):
-        user_set.add(i.lower())
+        user_set.add(i.strip().lower())
 
     while len(user_set.difference(valid_answers)) != 0 and user_input.lower() not in ['back', 'exit']:
         print('Please only enter characters A, B, C, or D, separated by a space')
@@ -32,7 +32,7 @@ def get_abcd_multi():
             user_set.add(i.lower())
 
 
-    return user_input
+    return user_set
         
  
 def get_number(lower_bound, upper_bound):

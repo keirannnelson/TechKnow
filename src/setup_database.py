@@ -40,7 +40,7 @@ def create_database():
     )
     """)
 
-    with open(csv_path, newline='') as f:
+    with open(csv_path, newline='', encoding='utf-8') as f:
         reader = csv.reader(f)
         first_line = next(reader)
 

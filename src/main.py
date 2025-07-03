@@ -149,7 +149,7 @@ def show_question_flow(topic, question_list, id_map):
     if user_ans2 == 'next': return
     user_ans2 = {answers2[ABCD_TO_INDEX[c]] for c in user_ans2}
 
-    pf.print_feedback(user_ans1, user_ans2, types, ds)
+    pf.print_feedback(user_ans1, user_ans2, answers1, answers2)  # changed: pass displayed MCQ options lists instead of empty type/ds lists to avoid indexing errors  # changed: convert sets to lists to avoid indexing errors
 
     # Optional hint
     if question['hints']:
@@ -196,7 +196,7 @@ def main():
     pf.print_general(
         """
 Welcome to TechKnow!
-TechKnow is an interview prepper that lets you choose from 71 LeetCode topics and practice random questions on the fly.
+TechKnow is an interview prepper that lets you choose from 71 LeetCode topics and practice any question on the fly.
 Simply type a topic number to get a random problem, or 'exit' to quit.
 """,
         footer=False

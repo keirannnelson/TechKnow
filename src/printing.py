@@ -96,9 +96,9 @@ def print_feedback(user_answer1, user_answer2, correct_answer1, correct_answer2,
         else:
             correct_answer1 = list(correct_answer1)
             if len(correct_answer1) == 1:
-                print(f'incorrect! This problem is a {correct_answer1[0]} problem ', end='')
+                print(f'incorrect! This problem is a {correct_answer1[0]} problem')
             else:
-                print(f'incorrect! The problem is a')
+                print(f'incorrect! The problem is a ', end='')
                 
                 for i in correct_answer1[:-1]:
                     print(f'{i}', end=', ')

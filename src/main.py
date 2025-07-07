@@ -129,27 +129,33 @@ def show_question_flow(topic, question_list, id_map):
         print('Invalid selection, please try again.')
 
     pf.print_general(f"{diff.capitalize()} question:", header=False, footer=False)
-    pf.print_problem(question['title'], question['text'], header=False)
+    pf.print_problem(question['title'], question['text'], header=False, footer=False)
+
+    answers1, answers2, user_ans1, user_ans2 = None, None, None, None
 
     # Approach MCQ
     types = set(question['tags']) - DATA_STRUCTURES
-    answers1 = get_answer_choice(types, TYPES)
-    pf.print_approach_question(answers1)
-    user_ans1 = get_abcd_multi()
-    if user_ans1 == 'exit': sys.exit(0)
-    if user_ans1 == 'next': return
-    user_ans1 = {answers1[ABCD_TO_INDEX[c]] for c in user_ans1}
+    valid_type = len(types) != 0
+    if valid_type:
+        answers1 = get_answer_choice(types, TYPES)
+        pf.print_approach_question(answers1)
+        user_ans1 = get_abcd_multi()
+        if user_ans1 == 'exit': sys.exit(0)
+        if user_ans1 == 'next': return
+        user_ans1 = {answers1[ABCD_TO_INDEX[c]] for c in user_ans1}
 
     # Data-structure MCQ
     ds = set(question['tags']) & DATA_STRUCTURES
-    answers2 = get_answer_choice(ds, DATA_STRUCTURES)
-    pf.print_data_structures_question(answers2)
-    user_ans2 = get_abcd_multi()
-    if user_ans2 == 'exit': sys.exit(0)
-    if user_ans2 == 'next': return
-    user_ans2 = {answers2[ABCD_TO_INDEX[c]] for c in user_ans2}
+    valid_ds = len(ds) != 0
+    if valid_ds:
+        answers2 = get_answer_choice(ds, DATA_STRUCTURES)
+        pf.print_data_structures_question(answers2)
+        user_ans2 = get_abcd_multi()
+        if user_ans2 == 'exit': sys.exit(0)
+        if user_ans2 == 'next': return
+        user_ans2 = {answers2[ABCD_TO_INDEX[c]] for c in user_ans2}
 
-    pf.print_feedback(user_ans1, user_ans2, answers1, answers2)  # changed: pass displayed MCQ options lists instead of empty type/ds lists to avoid indexing errors  # changed: convert sets to lists to avoid indexing errors
+    pf.print_feedback(user_ans1, user_ans2, types, ds, valid_type=valid_type, valid_ds=valid_ds)  # changed: pass displayed MCQ options lists instead of empty type/ds lists to avoid indexing errors  # changed: convert sets to lists to avoid indexing errors
 
     # Optional hint
     if question['hints']:

@@ -72,61 +72,65 @@ def print_problem_menu(problems, header=True, footer=True):
     if footer:
         print('='*30)
 
-def print_feedback(user_answer1, user_answer2, correct_answer1, correct_answer2, header=True, footer=True):
+def print_feedback(user_answer1, user_answer2, correct_answer1, correct_answer2, header=True, footer=True, valid_type=True, valid_ds=True):
 
+    if not(valid_type or valid_ds):
+        return
 
     if header:
         print('='*30)
 
     print()
-    if check_answer(user_answer1, correct_answer1):
-        correct_answer1 = list(correct_answer1)
-        if len(correct_answer1) == 1:
-            print(f'Correct! This problem is a {correct_answer1[0]} problem ', end='')
-        else:
-            print(f'Correct! The problem is a ')
-            
-            for i in correct_answer1[:-1]:
-                print(f'{i}', end=', ')
+    if valid_type:
+        if check_answer(user_answer1, correct_answer1):
+            correct_answer1 = list(correct_answer1)
+            if len(correct_answer1) == 1:
+                print(f'Correct! This problem is a {correct_answer1[0]} problem ', end='')
+            else:
+                print(f'Correct! The problem is a ')
+                
+                for i in correct_answer1[:-1]:
+                    print(f'{i}', end=', ')
 
-            print(f'and {correct_answer1[-1]} problem')
-    else:
-        correct_answer1 = list(correct_answer1)
-        if len(correct_answer1) == 1:
-            print(f'incorrect! This problem is a {correct_answer1[0]} problem ', end='')
+                print(f'and {correct_answer1[-1]} problem')
         else:
-            print(f'incorrect! The problem is a')
-            
-            for i in correct_answer1[:-1]:
-                print(f'{i}', end=', ')
+            correct_answer1 = list(correct_answer1)
+            if len(correct_answer1) == 1:
+                print(f'incorrect! This problem is a {correct_answer1[0]} problem ', end='')
+            else:
+                print(f'incorrect! The problem is a')
+                
+                for i in correct_answer1[:-1]:
+                    print(f'{i}', end=', ')
 
-            print(f'and {correct_answer1[-1]} problem')
+                print(f'and {correct_answer1[-1]} problem')
         
-    print()
-    if check_answer(user_answer2, correct_answer2):
-        correct_answer2 = list(correct_answer2)
-        if len(correct_answer2) == 1:
-            print(f'Correct! The data structure utilized in this problem is a {correct_answer2[0]}')
+    if valid_ds:
+        print()
+        if check_answer(user_answer2, correct_answer2):
+            correct_answer2 = list(correct_answer2)
+            if len(correct_answer2) == 1:
+                print(f'Correct! The data structure utilized in this problem is a {correct_answer2[0]}')
+            else:
+                print('Correct! The data structures utilized in this problem are ', end='')
+                
+                for i in correct_answer2[:-1]:
+                    print(f'{i}', end=', ')
+
+                print(f'and {correct_answer2[-1]}')
+
+                
         else:
-            print('Correct! The data structures utilized in this problem are ', end='')
-            
-            for i in correct_answer2[:-1]:
-                print(f'{i}', end=', ')
+            correct_answer2 = list(correct_answer2)
+            if len(correct_answer2) == 1:
+                print(f'Incorrect! the only data structure utilized in this problem is a {correct_answer2[0]}')
+            else:
+                print('Incorrect! The data structures utilized in this problem are ', end='')
+                for i in correct_answer2[:-1]:
+                    print(f'{i}', end=', ')
 
-            print(f'and {correct_answer2[-1]}')
-
-            
-    else:
-        correct_answer2 = list(correct_answer2)
-        if len(correct_answer2) == 1:
-            print(f'Incorrect! the only data structure utilized in this problem is a {correct_answer2[0]}')
-        else:
-            print('Incorrect! The data structures utilized in this problem are ', end='')
-            for i in correct_answer2[:-1]:
-                print(f'{i}', end=', ')
-
-            print(f'and {correct_answer2[-1]}')
-            
+                print(f'and {correct_answer2[-1]}')
+                
     print()
     if footer:
         print('='*30)

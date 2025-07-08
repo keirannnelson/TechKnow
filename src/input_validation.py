@@ -66,7 +66,16 @@ def get_program(delimiter=';'):
 
 def check_program(program):
     try:
-        exec((program), {})  # Dangerous: only for trusted input!
+        exec((program), {})
         return True
     except Exception:
         return False
+
+def prompt_difficulty():
+    options = {'1': 'easy', '2': 'medium', '3': 'hard', '4': 'random'}
+    while True:
+        print("Select difficulty: 1) Easy  2) Medium  3) Hard  4) Random")
+        choice = input('>>> ').strip()
+        if choice in options:
+            return options[choice]
+        print('Invalid selection. Choose 1, 2, 3, or 4.')

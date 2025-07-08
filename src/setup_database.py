@@ -5,6 +5,26 @@ import kagglehub
 
 DB_FILE = "leetcode.db"
 
+DATA_STRUCTURES = {
+    'Trie', 'Binary Indexed Tree', 'String', 'Hash Table', 'Graph', 'Stack',
+    'Heap (Priority Queue)', 'Array', 'Binary Tree', 'Ordered Set', 'Tree', 'Queue',
+    'Binary Search Tree', 'Linked List', 'Monotonic Queue', 'Doubly-Linked List'
+}
+
+TYPES = {
+    'Number Theory', 'Recursion', 'Design', 'Brainteaser', 'Reservoir Sampling', 'Greedy',
+    'Enumeration', 'Math', 'Quickselect', 'String Matching', 'Divide and Conquer',
+    'Memoization', 'Hash Function', 'Interactive', 'Randomized', 'Binary Search',
+    'Bit Manipulation', 'Bitmask', 'Biconnected Component', 'Rolling Hash', 'Data Stream',
+    'Eulerian Circuit', 'Strongly Connected Component', 'Line Sweep', 'Monotonic Stack',
+    'Prefix Sum', 'Simulation', 'Merge Sort', 'Matrix', 'Game Theory', 'Rejection Sampling',
+    'Minimum Spanning Tree', 'Depth-First Search', 'Dynamic Programming', 'Sorting',
+    'Segment Tree', 'Database', 'Iterator', 'Counting', 'Two Pointers', 'Sliding Window',
+    'Suffix Array', 'Backtracking', 'Shortest Path', 'Bucket Sort', 'Geometry',
+    'Combinatorics', 'Concurrency', 'Breadth-First Search', 'Counting Sort', 'Shell',
+    'Union Find', 'Probability and Statistics', 'Topological Sort', 'Radix Sort'
+}
+
 def create_database():
     # remove existing DB if it exists
     if os.path.exists(DB_FILE):

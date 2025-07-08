@@ -2,42 +2,15 @@ import os
 import random
 import sqlite3
 import sys
+
 import printing as pf
 from ai_feedback import give_feedback
-from input_validation import get_program, get_abcd_multi, check_program
+from input_validation import get_program, get_abcd_multi, check_program, prompt_difficulty
 from input_evaluation import check_answer
+from setup_database import DATA_STRUCTURES, TYPES
 
-DATA_STRUCTURES = {
-    'Trie', 'Binary Indexed Tree', 'String', 'Hash Table', 'Graph', 'Stack',
-    'Heap (Priority Queue)', 'Array', 'Binary Tree', 'Ordered Set', 'Tree', 'Queue',
-    'Binary Search Tree', 'Linked List', 'Monotonic Queue', 'Doubly-Linked List'
-}
-
-TYPES = {
-    'Number Theory', 'Recursion', 'Design', 'Brainteaser', 'Reservoir Sampling', 'Greedy',
-    'Enumeration', 'Math', 'Quickselect', 'String Matching', 'Divide and Conquer',
-    'Memoization', 'Hash Function', 'Interactive', 'Randomized', 'Binary Search',
-    'Bit Manipulation', 'Bitmask', 'Biconnected Component', 'Rolling Hash', 'Data Stream',
-    'Eulerian Circuit', 'Strongly Connected Component', 'Line Sweep', 'Monotonic Stack',
-    'Prefix Sum', 'Simulation', 'Merge Sort', 'Matrix', 'Game Theory', 'Rejection Sampling',
-    'Minimum Spanning Tree', 'Depth-First Search', 'Dynamic Programming', 'Sorting',
-    'Segment Tree', 'Database', 'Iterator', 'Counting', 'Two Pointers', 'Sliding Window',
-    'Suffix Array', 'Backtracking', 'Shortest Path', 'Bucket Sort', 'Geometry',
-    'Combinatorics', 'Concurrency', 'Breadth-First Search', 'Counting Sort', 'Shell',
-    'Union Find', 'Probability and Statistics', 'Topological Sort', 'Radix Sort'
-}
 
 ABCD_TO_INDEX = {'a': 0, 'b': 1, 'c': 2, 'd': 3}
-
-
-def prompt_difficulty():
-    options = {'1': 'easy', '2': 'medium', '3': 'hard', '4': 'random'}
-    while True:
-        print("Select difficulty: 1) Easy  2) Medium  3) Hard  4) Random")
-        choice = input('>>> ').strip()
-        if choice in options:
-            return options[choice]
-        print('Invalid selection. Choose 1, 2, 3, or 4.')
 
 
 def get_answer_choice(correct_answers, answers_set):
@@ -87,11 +60,7 @@ def load_buckets():
     return buckets, id_map
 
 
-def display_menu(topics, buckets):
-    pf.print_general('Select a topic by number:', footer=False)
-    for i, topic in enumerate(topics, start=1):
-        print(f"  {i:2d}. {topic} ({len(buckets[topic])} problems)")
-    print()
+
 
 
 def prompt_choice(num_topics):
@@ -145,7 +114,7 @@ def show_question_flow(topic, question_list, id_map):
         user_ans1 = {answers1[ABCD_TO_INDEX[c]] for c in user_ans1}
 
     # Data-structure MCQ
-    ds = set(question['tags']) & DATA_STRUCTURES
+    ds = set(question['tags'])
     valid_ds = len(ds) != 0
     if valid_ds:
         answers2 = get_answer_choice(ds, DATA_STRUCTURES)
@@ -171,7 +140,7 @@ def show_question_flow(topic, question_list, id_map):
     # Code attempt loop
     while True:
         print("Enter 'similar', 'next', 'exit', or paste your code ending with ';'.")
-        cmd = input('> ').strip().lower()
+        cmd = input('>>> ').strip().lower()
         if cmd == 'similar' and question['similar_ids']:
             sim_list = [id_map[i] for i in question['similar_ids'] if i in id_map]
             if sim_list:
@@ -212,7 +181,7 @@ Simply type a topic number to get a random problem, or 'exit' to quit.
     topics = sorted(buckets.keys())
 
     while True:
-        display_menu(topics, buckets)
+        pf.display_menu(topics, buckets)
         idx = prompt_choice(len(topics))
         if idx is None:
             break

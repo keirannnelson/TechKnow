@@ -134,3 +134,9 @@ def print_feedback(user_answer1, user_answer2, correct_answer1, correct_answer2,
     print()
     if footer:
         print('='*30)
+
+def display_menu(topics, buckets):
+    print_general('Select a topic by number:', footer=False)
+    for i, topic in enumerate(topics, start=1):
+        print(f"  {i:2d}. {topic} ({len(buckets[topic])} problems)")
+    print()
